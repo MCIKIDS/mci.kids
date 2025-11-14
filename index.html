@@ -7,15 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primaria:#4B1E6D; --secundaria:#FF9800; <!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <title>MCI Kids - Ministério Infantil</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
       --primaria:#4B1E6D; --secundaria:#FF9800; --azul:#4FC3F7; --verde:#8BC34A;
       --fundo:#FFF8E1; --card:#FCE4EC; --texto:#333; --borda:#ddd;
     }
@@ -44,7 +35,6 @@
     .btn{background:var(--secundaria);color:#fff;border:none;padding:12px 16px;border-radius:8px;cursor:pointer;font-size:16px}
     .btn:hover{background:#F57C00}
     .btn-sec{background:var(--azul)}
-    .btn-danger{background:#e53935}
     .card{background:var(--card);border-radius:12px;padding:16px;margin-top:16px;border:1px solid var(--borda)}
     .hidden{display:none!important}
     input,select,textarea{width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px;font-size:16px}
@@ -64,6 +54,7 @@
   <img src="logo.png" alt="Logo MCI Kids">
   <h1>Ministério Infantil - MCI Kids</h1>
 </header>
+
 <main>
   <p class="versiculo">"Ensina a criança no caminho em que deve andar..." - Provérbios 22:6</p>
   <div class="center"><button class="btn" onclick="mostrarMenu()">Entrar</button></div>
@@ -76,6 +67,7 @@
     <button class="btn" onclick="abrirArea('feed')">📰 Feed</button>
     <button class="btn" onclick="abrirArea('arquivos')">📁 Arquivos</button>
   </div>
+
   <!-- Área dos Pais (Fichas) -->
   <section id="area-pais" class="card hidden">
     <h2>Fichas cadastrais</h2>
@@ -187,7 +179,12 @@
       </div>
     </div>
   </section>
+</main>
+
 <script>
+  // Config: substitua se mudar sua URL /exec
+  const API_BASE = "https://script.google.com/macros/s/AKfycbzZjAf7796t3Xx30wxOeUjfbiIhqFyLHZ8aa1VwwgvTpS1sFbazYGnHvHk_AMKxhGsYzw/exec";
+
   // Navegação
   function mostrarMenu(){ document.getElementById('menuPrincipal').classList.remove('hidden'); }
   function abrirArea(id){
@@ -201,26 +198,19 @@
     if(id==='pais'){ carregarFichas(); }
   }
 
-  // Config
-  const API_BASE = "https://script.google.com/macros/s/AKfycbzZjAf7796t3Xx30wxOeUjfbiIhqFyLHZ8aa1VwwgvTpS1sFbazYGnHvHk_AMKxhGsYzw/exec";
-
-  // Presença (aba Presenças) — colunas: NOME, DATA, PRESENTE, TIPO, REGISTRADO POR
+  // Presença — colunas: NOME, DATA, PRESENTE, TIPO, REGISTRADO POR
   function adicionarPresenca(){
     const nome = document.getElementById('novo-nome').value.trim();
     const tipo = document.getElementById('novo-tipo').value;
     const data = document.getElementById('dia-chamada').value;
     const registradoPor = "Site";
-
     if(!nome || !data){ alert('Informe nome e data.'); return; }
-
     const dados = [nome, data, "Sim", tipo, registradoPor];
-
     fetch(`${API_BASE}?sheet=Presenças`, { method: "POST", body: JSON.stringify(dados) })
       .then(res=>res.text())
       .then(()=>{ alert('Presença registrada!'); document.getElementById('novo-nome').value=''; carregarPresencas(); })
       .catch(err=>{ console.error(err); alert('Erro ao registrar.'); });
   }
-
   function carregarPresencas(){
     fetch(`${API_BASE}?sheet=Presenças`)
       .then(res=>res.json())
@@ -240,24 +230,20 @@
       .catch(err=>console.error(err));
   }
 
-  // Fichas (aba Fichas) — colunas: NOME, NASCIMENTO, RESPONSÁVEL, TELEFONE, OBSERVAÇÃO
+  // Fichas — colunas: NOME, NASCIMENTO, RESPONSÁVEL, TELEFONE, OBSERVAÇÃO
   function salvarFicha(){
     const nome = document.getElementById('ficha-nome').value.trim();
     const nasc = document.getElementById('ficha-nasc').value;
     const resp = document.getElementById('ficha-resp').value.trim();
     const tel  = document.getElementById('ficha-tel').value.trim();
     const obs  = document.getElementById('ficha-obs').value.trim();
-
     if(!nome || !nasc || !resp){ alert('Preencha nome, nascimento e responsável.'); return; }
-
     const dados = [nome, nasc, resp, tel, obs];
-
     fetch(`${API_BASE}?sheet=Fichas`, { method: "POST", body: JSON.stringify(dados) })
       .then(res=>res.text())
       .then(()=>{ alert('Ficha salva!'); document.getElementById('ficha-nome').value=''; document.getElementById('ficha-nasc').value=''; document.getElementById('ficha-resp').value=''; document.getElementById('ficha-tel').value=''; document.getElementById('ficha-obs').value=''; carregarFichas(); })
       .catch(err=>{ console.error(err); alert('Erro ao salvar ficha.'); });
   }
-
   function carregarFichas(){
     fetch(`${API_BASE}?sheet=Fichas`)
       .then(res=>res.json())
@@ -273,7 +259,7 @@
       .catch(err=>console.error(err));
   }
 
-  // Ofertas (aba Ofertas) — colunas: DATA, CATEGORIA, TIPO, VALOR, OBSERVAÇÃO, REGISTRADO POR
+  // Ofertas — colunas: DATA, CATEGORIA, TIPO, VALOR, OBSERVAÇÃO, REGISTRADO POR
   function adicionarOferta(){
     const data = new Date().toISOString().slice(0,10);
     const categoria = document.getElementById('of-cat').value;
@@ -281,17 +267,13 @@
     const valor = document.getElementById('of-valor').value;
     const obs   = document.getElementById('of-obs').value.trim();
     const registradoPor = "Site";
-
     if(!valor){ alert('Informe o valor.'); return; }
-
     const dados = [data, categoria, tipo, valor, obs, registradoPor];
-
     fetch(`${API_BASE}?sheet=Ofertas`, { method: "POST", body: JSON.stringify(dados) })
       .then(res=>res.text())
       .then(()=>{ alert('Oferta registrada!'); document.getElementById('of-valor').value=''; document.getElementById('of-obs').value=''; carregarOfertas(); })
       .catch(err=>{ console.error(err); alert('Erro ao registrar oferta.'); });
   }
-
   function carregarOfertas(){
     fetch(`${API_BASE}?sheet=Ofertas`)
       .then(res=>res.json())
@@ -311,7 +293,7 @@
       .catch(err=>console.error(err));
   }
 
-  // Feed (aba Feed) — colunas: TEXTO, PÚBLICO, MENCIONADOS, TIPO, CRIADO POR, DATA
+  // Feed — colunas: TEXTO, PÚBLICO, MENCIONADOS, TIPO, CRIADO POR, DATA
   function postarFeed(){
     const texto = document.getElementById('feed-texto').value.trim();
     const publico = document.getElementById('feed-publico').checked ? "Sim" : "Não";
@@ -319,17 +301,13 @@
     const tipo = document.getElementById('feed-tipo').value;
     const criadoPor = document.getElementById('feed-criado-por').value.trim() || "Site";
     const data = new Date().toISOString();
-
     if(!texto){ alert('Escreva uma mensagem.'); return; }
-
     const dados = [texto, publico, mencoes, tipo, criadoPor, data];
-
     fetch(`${API_BASE}?sheet=Feed`, { method: "POST", body: JSON.stringify(dados) })
       .then(res=>res.text())
       .then(()=>{ alert('Mensagem postada!'); document.getElementById('feed-texto').value=''; document.getElementById('feed-mencoes').value=''; carregarFeed(); })
       .catch(err=>{ console.error(err); alert('Erro ao postar.'); });
   }
-
   function carregarFeed(){
     fetch(`${API_BASE}?sheet=Feed`)
       .then(res=>res.json())
@@ -345,23 +323,19 @@
       .catch(err=>console.error(err));
   }
 
-  // Arquivos (aba Arquivos) — colunas: TÍTULO, TIPO, URL, CRIADO EM
+  // Arquivos — colunas: TÍTULO, TIPO, URL, CRIADO EM
   function enviarArquivo(){
     const titulo = document.getElementById('arq-titulo').value.trim();
     const tipo   = document.getElementById('arq-tipo').value;
     const url    = document.getElementById('arq-url').value.trim();
     const criadoEm = new Date().toISOString();
-
     if(!titulo || !url){ alert('Informe título e URL.'); return; }
-
     const dados = [titulo, tipo, url, criadoEm];
-
     fetch(`${API_BASE}?sheet=Arquivos`, { method: "POST", body: JSON.stringify(dados) })
       .then(res=>res.text())
       .then(()=>{ alert('Arquivo registrado!'); document.getElementById('arq-titulo').value=''; document.getElementById('arq-url').value=''; carregarArquivos(); })
       .catch(err=>{ console.error(err); alert('Erro ao registrar arquivo.'); });
   }
-
   function carregarArquivos(){
     fetch(`${API_BASE}?sheet=Arquivos`)
       .then(res=>res.json())
@@ -370,15 +344,10 @@
         tbody.innerHTML = "";
         data.slice(1).forEach(linha=>{
           const tr = document.createElement('tr');
-          const tds = [
-            linha[0],
-            linha[1],
-            linha[2],
-            linha[3]
-          ];
-          tds.forEach((cel, i)=>{
+          // TÍTULO, TIPO, URL, CRIADO EM
+          linha.forEach((cel, idx)=>{
             const td = document.createElement('td');
-            if(i===2){
+            if(idx===2){
               const a = document.createElement('a');
               a.href = cel; a.target = "_blank"; a.textContent = cel || 'link';
               td.appendChild(a);
@@ -393,368 +362,9 @@
       .catch(err=>console.error(err));
   }
 
-  // Inicial: abrir menu
+  // Inicial
   window.addEventListener('load', ()=> mostrarMenu());
 </script>
-</main>
+
 </body>
 </html>
---azul:#4FC3F7; --verde:#8BC34A;
-      --fundo:#FFF8E1; --card:#FCE4EC; --texto:#333; --borda:#ddd;
-    }
-    *{box-sizing:border-box}
-    body {
-      font-family:'Comic Neue',cursive;
-      margin:0;
-      color:var(--texto);
-      font-size:17px;
-      background: linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet);
-      background-size: 1400% 1400%;
-      animation: rainbow 20s ease infinite;
-    }
-    @keyframes rainbow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    header{background:var(--primaria);color:#fff;padding:16px;text-align:center}
-    header img{height:90px}
-    main{max-width:1000px;margin:0 auto;padding:16px}
-    .versiculo{font-style:italic;color:#000;text-align:center;margin:12px 0 20px}
-    .menu-grid{display:grid;gap:12px;grid-template-columns:1fr;margin-top:12px}
-    @media(min-width:640px){.menu-grid{grid-template-columns:repeat(2,1fr)}}
-    @media(min-width:900px){.menu-grid{grid-template-columns:repeat(4,1fr)}}
-    .btn{background:var(--secundaria);color:#fff;border:none;padding:12px 16px;border-radius:8px;cursor:pointer;font-size:16px}
-    .btn:hover{background:#F57C00}
-    .btn-sec{background:var(--azul)}
-    .btn-danger{background:#e53935}
-    .btn-ghost{background:transparent;color:var(--primaria);border:1px solid var(--primaria)}
-    .card{background:var(--card);border-radius:12px;padding:16px;margin-top:16px;border:1px solid var(--borda)}
-    .hidden{display:none!important}
-    input,select,textarea{width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px;font-size:16px}
-    table{width:100%;border-collapse:collapse;margin-top:12px}
-    th,td{border:1px solid #bbb;padding:8px;text-align:center;font-size:15px}
-    th{background:#f5f5f5}
-    .pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eee;font-size:12px}
-    .subtle{color:#666;font-size:13px}
-    .center{text-align:center}
-    .mt-8{margin-top:8px} .mt-12{margin-top:12px} .mt-16{margin-top:16px}
-    .flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    label strong{margin-right:8px}
-  </style>
-</head>
-<body>
-<header>
-  <img src="logo.png" alt="Logo MCI Kids">
-  <h1>Ministério Infantil - MCI Kids</h1>
-</header>
-<main>
-  <p class="versiculo">"Ensina a criança no caminho em que deve andar..." - Provérbios 22:6</p>
-  <div class="center"><button class="btn" onclick="mostrarMenu()">Entrar</button></div>
-
-  <!-- Menu principal -->
-  <div id="menuPrincipal" class="menu-grid hidden">
-    <button class="btn" onclick="abrirArea('pais')">👨‍👩‍👧 Pais</button>
-    <button class="btn" onclick="abrirArea('lider')">🙋‍♂️ Líder</button>
-    <button class="btn" onclick="abrirArea('auxiliar')">🧑‍🏫 Auxiliar</button>
-    <button class="btn" onclick="abrirArea('oferta')">💰 Oferta</button>
-    <button class="btn btn-sec" onclick="abrirArea('feed')">📰 Feed</button>
-  </div>
-  <!-- Área dos Pais -->
-  <section id="area-pais" class="card hidden">
-    <h2>Área dos Pais</h2>
-    <div class="flex">
-      <div style="flex:1 1 320px">
-        <h3>Temas do mês</h3>
-        <ul id="temasPais"></ul>
-        <h3>Eventos</h3>
-        <ul id="eventosPais"></ul>
-      </div>
-      <div style="flex:1 1 320px">
-        <h3>Ficha cadastral</h3>
-        <input id="ficha-nome" placeholder="Nome da criança">
-        <input id="ficha-nasc" type="date">
-        <input id="ficha-resp" placeholder="Nome do responsável">
-        <input id="ficha-tel" placeholder="Telefone">
-        <textarea id="ficha-obs" placeholder="Alergias/Observações"></textarea>
-        <button class="btn" onclick="salvarFicha()">Salvar ficha</button>
-        <ul id="fichas-lista" class="mt-12"></ul>
-      </div>
-    </div>
-    <p class="subtle">Ficha manual; depois podemos gerar PDF ou salvar na nuvem.</p>
-  </section>
-
-  <!-- Área do Líder -->
-  <section id="area-lider" class="card hidden">
-    <h2>Líder</h2>
-    <div id="lider-login">
-      <input id="lider-email" type="email" placeholder="Email">
-      <input id="lider-senha" type="password" placeholder="Senha">
-      <button class="btn" onclick="login('lider')">Entrar</button>
-      <p id="lider-erro" class="subtle"></p>
-    </div>
-    <div id="lider-painel" class="hidden">
-      <p><span class="pill">Líder</span> Acesso completo.</p>
-      <div class="flex">
-        <button class="btn" onclick="abrirArea('presenca')">✅ Presença</button>
-        <button class="btn" onclick="abrirArea('arquivos')">📁 Arquivos</button>
-        <button class="btn btn-sec" onclick="abrirArea('feed')">📰 Feed</button>
-        <button class="btn" onclick="abrirArea('oferta')">💰 Oferta</button>
-      </div>
-      <div id="lider-fichas" class="mt-16">
-        <h3>Fichas recebidas dos Pais</h3>
-        <ul id="fichas-lider"></ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- Área do Auxiliar -->
-  <section id="area-auxiliar" class="card hidden">
-    <h2>Auxiliar</h2>
-    <div id="auxiliar-entrada">
-      <input id="aux-nome" placeholder="Seu nome">
-      <button class="btn" onclick="entrarAuxiliar()">Entrar</button>
-      <p id="aux-erro" class="subtle"></p>
-    </div>
-    <div id="auxiliar-painel" class="hidden">
-      <p><span class="pill">Auxiliar</span> Permissões limitadas.</p>
-      <div class="flex">
-        <button class="btn" onclick="abrirArea('presenca')">✅ Presença</button>
-        <button class="btn" onclick="abrirArea('arquivos')">📁 Arquivos</button>
-        <button class="btn btn-sec" onclick="abrirArea('feed')">📰 Feed</button>
-        <button class="btn" onclick="abrirArea('oferta')">💰 Oferta</button>
-        <button class="btn btn-danger" onclick="sairAuxiliar()">Sair</button>
-      </div>
-    </div>
-  </section>
-  <!-- Presença -->
-  <section id="area-presenca" class="card hidden">
-    <h2>Lista de Presença</h2>
-
-    <!-- Data da chamada -->
-    <div class="flex mt-8">
-      <label for="dia-chamada"><strong>Dia da chamada:</strong></label>
-      <input id="dia-chamada" type="date" />
-      <button class="btn" onclick="renderPresenca()">Atualizar lista</button>
-    </div>
-
-    <!-- Controles de cadastro de pessoas -->
-    <div id="aluno-controles" class="flex mt-8">
-      <input id="novo-nome" placeholder="Nome do aluno/convidado">
-      <select id="novo-tipo">
-        <option value="aluno">Aluno</option>
-        <option value="convidado">Convidado</option>
-      </select>
-      <button class="btn" onclick="adicionarPessoa()">Adicionar</button>
-    </div>
-
-    <!-- Tabela planilha -->
-    <table class="mt-8">
-      <thead>
-        <tr>
-          <th>Nome</th><th>Dia</th><th>Presença</th><th>Tipo</th><th>Registrado por</th><th>Ações</th>
-        </tr>
-      </thead>
-      <tbody id="lista-presenca"></tbody>
-    </table>
-
-    <!-- Resumo e exportação -->
-    <div class="mt-12">
-      <h3>Resumo</h3>
-      <div id="filtros-presenca" class="flex">
-        <div class="intervalo-pres">
-          <label>Início</label><input type="date" class="pres-inicio">
-          <label>Fim</label><input type="date" class="pres-fim">
-        </div>
-      </div>
-      <div class="flex mt-8">
-        <button class="btn" onclick="adicionarIntervalo('presenca')">Adicionar intervalo</button>
-        <button class="btn btn-sec" onclick="exportarPresencas()">Exportar CSV</button>
-      </div>
-      <table>
-        <thead>
-          <tr><th>Nome</th><th>% Frequência</th><th>Presentes</th><th>Faltas</th></tr>
-        </thead>
-        <tbody id="resumo-presenca"></tbody>
-      </table>
-    </div>
-    <p class="subtle mt-8">Auxiliar edita/deleta dentro de 24h; líder sempre.</p>
-  </section>
-
-  <!-- Arquivos -->
-  <section id="area-arquivos" class="card hidden">
-    <h2>Arquivos</h2>
-    <div class="flex">
-      <div style="flex:1 1 320px">
-        <h3>Enviar arquivo</h3>
-        <input id="arq-titulo" placeholder="Título">
-        <select id="arq-tipo">
-          <option value="pdf">PDF</option>
-          <option value="txt">TXT</option>
-        </select>
-        <input id="arq-file" type="file" accept=".pdf,.txt">
-        <div class="mt-8"><button class="btn" onclick="enviarArquivo()">Enviar</button></div>
-        <p class="subtle mt-8">Links reais virão do Storage quando conectarmos a nuvem.</p>
-      </div>
-      <div style="flex:1 1 320px">
-        <h3>Lista</h3>
-        <ul id="arquivos-lista"></ul>
-      </div>
-    </div>
-  </section>
-  <!-- Ofertas -->
-  <section id="area-oferta" class="card hidden">
-    <h2>Ofertas</h2>
-    <div class="flex">
-      <div style="flex:1 1 320px">
-        <h3>Adicionar valor</h3>
-        <select id="of-cat">
-          <option value="oferta">Oferta</option>
-          <option value="gasto">Gasto pessoal</option>
-        </select>
-        <select id="of-tipo">
-          <option value="entrada">Entrada</option>
-          <option value="saida">Saída</option>
-        </select>
-        <input id="of-valor" type="number" min="0" step="0.01" placeholder="Valor">
-        <input id="of-obs" placeholder="Observação (opcional)">
-        <button class="btn" onclick="adicionarOferta()">Registrar</button>
-        <p class="subtle">Auxiliar não registra saída de oferta.</p>
-      </div>
-      <div style="flex:1 1 320px">
-        <h3>Saldo atual (Oferta)</h3>
-        <p><strong id="saldo-atual">R$ 0,00</strong></p>
-        <p class="subtle">Saldo = entradas de oferta − saídas de oferta.</p>
-      </div>
-    </div>
-    <h3 class="mt-12">Histórico</h3>
-    <table>
-      <thead>
-        <tr><th>Data</th><th>Categoria</th><th>Tipo</th><th>Valor</th><th>Registrado por</th><th>Obs</th><th>Ações</th></tr>
-      </thead>
-      <tbody id="historico-oferta"></tbody>
-    </table>
-    <div class="mt-12">
-      <h3>Exportar</h3>
-      <div id="filtros-oferta" class="flex">
-        <div class="intervalo-of">
-          <label>Início</label><input type="date" class="of-inicio">
-          <label>Fim</label><input type="date" class="of-fim">
-        </div>
-      </div>
-      <div class="flex mt-8">
-        <button class="btn" onclick="adicionarIntervalo('oferta')">Adicionar intervalo</button>
-        <button class="btn btn-sec" onclick="exportarOfertas()">Exportar CSV</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- Feed -->
-  <section id="area-feed" class="card hidden">
-    <h2>Feed</h2>
-    <div class="flex">
-      <div style="flex:1 1 320px">
-        <h3>Nova mensagem</h3>
-        <textarea id="feed-texto" placeholder="Escreva uma mensagem..."></textarea>
-        <label><input type="checkbox" id="feed-publico"> Tornar público (eventos/avisos)</label>
-        <input id="feed-mencoes" placeholder="Mencionar usuários (separe por vírgula)">
-        <select id="feed-tipo">
-          <option value="aviso">Aviso</option>
-          <option value="evento">Evento</option>
-          <option value="escala">Escala</option>
-        </select>
-        <button class="btn" onclick="postarFeed()">Postar</button>
-        <p class="subtle">Privado: só mencionados veem. Líder vê tudo.</p>
-      </div>
-      <div style="flex:1 1 320px">
-        <h3>Feed do seu papel</h3>
-        <ul id="feed-papel"></ul>
-      </div>
-      <div style="flex:1 1 320px">
-        <h3>Feed público</h3>
-        <ul id="feed-publico-lista"></ul>
-      </div>
-    </div>
-  </section>
-</main>
-<script>
-  // ===========================
-  // ESTADO GLOBAL
-  // ===========================
-  const estado = {
-    usuario: null,             // { uid, nome, papel }
-    papel: 'visitante',
-    auxiliarNome: '',
-    alunos: [],                // [{id,nome,tipo}]
-    presencas: [],             // [{id,alunoId,dataISO,presente,registradoPorNome,papel,criadoEm}]
-    ofertas: [],               // [{id,categoria,tipo,valor,obs,criadoEm,registradoPorNome,papel}]
-    feed: [],                  // [{id,texto,publico,mencionados[],tipo,criadoEm,criadoPorNome,reacoes,comentarios[]}]
-    arquivos: [],              // [{id,titulo,tipo,url,criadoEm}]
-    fichas: []                 // [{id,nome,nasc,resp,tel,obs,criadoEm}]
-  };
-
-  // ===========================
-  // NAVEGAÇÃO
-  // ===========================
-  function mostrarMenu(){ document.getElementById('menuPrincipal').classList.remove('hidden'); }
-  function abrirArea(id){
-    const ids=['pais','lider','auxiliar','oferta','feed','arquivos','presenca'];
-    ids.forEach(a=>document.getElementById('area-'+a).classList.add('hidden'));
-    document.getElementById('area-'+id).classList.remove('hidden');
-    if(id==='presenca') {
-      const inputDia = document.getElementById('dia-chamada');
-      if (inputDia && !inputDia.value) inputDia.value = new Date().toISOString().slice(0,10);
-      renderPresenca();
-    }
-    if(id==='oferta') renderOferta();
-    if(id==='feed') renderFeed();
-    if(id==='arquivos') renderArquivos();
-    if(id==='pais') renderPais();
-    if(id==='lider') renderFichasLider();
-  }
-  function setPapel(p){
-    estado.papel=p;
-    if(p==='lider'){
-      document.getElementById('lider-login').classList.add('hidden');
-      document.getElementById('lider-painel').classList.remove('hidden');
-    } else if(p==='auxiliar'){
-      document.getElementById('auxiliar-entrada').classList.add('hidden');
-      document.getElementById('auxiliar-painel').classList.remove('hidden');
-    }
-  }
-
-  // ===========================
-  // LOGIN / AUXILIAR
-  // ===========================
-  async function login(papel){
-    const email=document.getElementById(`${papel}-email`)?.value;
-    const senha=document.getElementById(`${papel}-senha`)?.value;
-    if(!email||!senha){ document.getElementById(`${papel}-erro`).textContent='Digite email e senha.'; return; }
-    estado.usuario={ uid:'uid-'+papel, nome:'Líder', papel };
-    setPapel(papel);
-    alert('Líder logado com sucesso!');
-  }
-  function entrarAuxiliar(){
-    const nomeInput=document.getElementById('aux-nome');
-    const nome=(nomeInput.value||'').trim();
-    if(!nome){ document.getElementById('aux-erro').textContent='Informe seu nome.'; nomeInput.focus(); return; }
-    estado.usuario={ uid:'aux-'+Date.now(), nome, papel:'auxiliar' };
-    estado.auxiliarNome=nome;
-    setPapel('auxiliar');
-    alert(`Auxiliar ${nome} entrou.`);
-  }
-  function sairAuxiliar(){
-    estado.usuario=null; estado.papel='visitante'; estado.auxiliarNome='';
-    document.getElementById('auxiliar-painel').classList.add('hidden');
-    document.getElementById('auxiliar-entrada').classList.remove('hidden');
-    alert('Você saiu como auxiliar.');
-  }
-
-  // ===========================
-  // (continua com todas as funções de regras de edição, presença, ofertas, feed e arquivos exatamente como no seu arquivo original)
-  // ===========================
-</script>
-</body>
-</html>
-
-
