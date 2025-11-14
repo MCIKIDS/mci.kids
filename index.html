@@ -42,9 +42,7 @@
       margin-top: 20px;
       padding: 10px;
     }
-    .center {
-      text-align: center;
-    }
+    .center { text-align: center; }
     .menu-grid {
       display: flex;
       flex-wrap: wrap;
@@ -116,7 +114,9 @@
     <h3 class="mt-12">Lista de Presenças</h3>
     <table>
       <thead>
-        <tr><th>Nome</th><th>Data</th><th>Presente</th><th>Tipo</th><th>Registrado por</th></tr>
+        <tr>
+          <th>Nome</th><th>Data</th><th>Presente</th><th>Tipo</th><th>Registrado por</th>
+        </tr>
       </thead>
       <tbody id="lista-presenca"></tbody>
     </table>
@@ -141,7 +141,9 @@
     <h3 class="mt-12">Histórico de Ofertas</h3>
     <table>
       <thead>
-        <tr><th>Data</th><th>Categoria</th><th>Tipo</th><th>Valor</th><th>Obs</th><th>Registrado por</th></tr>
+        <tr>
+          <th>Data</th><th>Categoria</th><th>Tipo</th><th>Valor</th><th>Obs</th><th>Registrado por</th>
+        </tr>
       </thead>
       <tbody id="historico-oferta"></tbody>
     </table>
@@ -191,7 +193,7 @@
   </section>
 <script>
   // Configuração: URL da sua API Google Apps Script
-  const API_BASE = "https://script.google.com/macros/s/AKfycbzZjAf7796t3Xx30wxOeUjfbiIhqFyLHZ8aa1VwwgvTpS1sFbazYGnHvHk_AMKxhGsYzw/exec";
+  const API_BASE = "https://script.google.com/macros/s/SEU-ENDPOINT-AQUI/exec";
 
   // Estado do usuário logado
   let estado = { usuario: null };
@@ -219,7 +221,7 @@
     if(id==='pais'){ carregarFichas(); }
   }
 
-  // Login Líder corrigido
+  // Login Líder
   function login(papel){
     const email = document.getElementById(`${papel}-email`).value.trim();
     const senha = document.getElementById(`${papel}-senha`).value.trim();
@@ -240,7 +242,7 @@
     }
   }
 
-  // Login Auxiliar corrigido
+  // Login Auxiliar
   function entrarAuxiliar(){
     const nome = document.getElementById('aux-nome').value.trim();
     const erro = document.getElementById('aux-erro');
@@ -266,7 +268,56 @@
     fetch(`${API_BASE}?sheet=Presenças`, { method: "POST", body: JSON.stringify(dados) })
       .then(res=>res.text())
       .then(()=>{ alert('Presença registrada!'); document.getElementById('novo-nome').value=''; carregarPresencas(); })
-      .catch(err=>{ console  // Ofertas
+      .catch(err=>{ console.error(err); alert('Erro ao registrar.'); });
+  }
+
+  function carregarPresencas(){
+    fetch(`${API_BASE}?sheet=Presenças`)
+      .then(res=>res.json())
+      .then(data=>{
+        const tbody = document.getElementById('lista-presenca');
+        tbody.innerHTML = "";
+        data.slice(1).forEach(linha=>{
+          const tr = document.createElement('tr');
+          linha.forEach(cel=>{
+            const td = document.createElement('td');
+            td.textContent = cel;
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err=>console.error(err));
+  }
+
+  // Fichas
+  function salvarFicha(){
+    const nome = document.getElementById('ficha-nome').value.trim();
+    const nasc = document.getElementById('ficha-nasc').value;
+    const resp = document.getElementById('ficha-resp').value.trim();
+    const tel  = document.getElementById('ficha-tel').value.trim();
+    const obs  = document.getElementById('ficha-obs').value.trim();
+    if(!nome || !nasc || !resp){ alert('Preencha nome, nascimento e responsável.'); return; }
+    const dados = [nome, nasc, resp, tel, obs];
+    fetch(`${API_BASE}?sheet=Fichas`, { method: "POST", body: JSON.stringify(dados) })
+      .then(res=>res.text())
+      .then(()=>{ alert('Ficha salva!'); document.getElementById('ficha-nome').value=''; document.getElementById('ficha-nasc').value=''; document.getElementById('ficha-resp').value=''; document.getElementById('ficha-tel').value=''; document.getElementById('ficha-obs').value=''; carregarFichas(); })
+      .catch(err=>{ console.error(err); alert('Erro ao salvar ficha.'); });
+  }
+
+  function carregarFichas(){
+    fetch(`${API_BASE}?sheet=Fichas`)
+      .then(res=>res.json())
+      .then(data=>{
+        const lista = document.getElementById('fichas-lista');
+        lista.innerHTML = "";
+        data.slice(1).forEach(linha=>{
+          const li = document.createElement('li');
+          li.textContent = `${linha[0]} — Resp: ${linha[2]} — Tel: ${linha[3]}`;
+          lista.appendChild(li);
+        });
+      })
+  // Ofertas
   function adicionarOferta(){
     const cat = document.getElementById('of-cat').value;
     const tipo = document.getElementById('of-tipo').value;
