@@ -28,25 +28,14 @@
     header{background:var(--primaria);color:#fff;padding:16px;text-align:center}
     header img{height:90px}
     main{max-width:1000px;margin:0 auto;padding:16px}
-    .versiculo{font-style:italic;color:#000;text-align:center;margin:12px 0 20px}
-    .menu-grid{display:grid;gap:12px;grid-template-columns:1fr;margin-top:12px}
-    @media(min-width:640px){.menu-grid{grid-template-columns:repeat(2,1fr)}}
-    @media(min-width:900px){.menu-grid{grid-template-columns:repeat(4,1fr)}}
-    .btn{background:var(--secundaria);color:#fff;border:none;padding:12px 16px;border-radius:8px;cursor:pointer;font-size:16px}
-    .btn:hover{background:#F57C00}
-    .btn-sec{background:var(--azul)}
     .card{background:var(--card);border-radius:12px;padding:16px;margin-top:16px;border:1px solid var(--borda)}
     .hidden{display:none!important}
     input,select,textarea{width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px;font-size:16px}
     table{width:100%;border-collapse:collapse;margin-top:12px}
     th,td{border:1px solid #bbb;padding:8px;text-align:center;font-size:15px}
     th{background:#f5f5f5}
-    .pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#eee;font-size:12px}
-    .subtle{color:#666;font-size:13px}
-    .center{text-align:center}
-    .mt-8{margin-top:8px} .mt-12{margin-top:12px} .mt-16{margin-top:16px}
-    .flex{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    label strong{margin-right:8px}
+    .btn{background:var(--secundaria);color:#fff;border:none;padding:12px 16px;border-radius:8px;cursor:pointer;font-size:16px}
+    .btn:hover{background:#F57C00}
   </style>
 </head>
 <body>
@@ -54,19 +43,36 @@
   <img src="logo.png" alt="Logo MCI Kids">
   <h1>Ministério Infantil - MCI Kids</h1>
 </header>
-
 <main>
   <p class="versiculo">"Ensina a criança no caminho em que deve andar..." - Provérbios 22:6</p>
   <div class="center"><button class="btn" onclick="mostrarMenu()">Entrar</button></div>
 
   <!-- Menu principal -->
   <div id="menuPrincipal" class="menu-grid hidden">
+    <button class="btn" onclick="abrirArea('login-lider')">🙋‍♂️ Líder</button>
+    <button class="btn" onclick="abrirArea('login-auxiliar')">🧑‍🏫 Auxiliar</button>
     <button class="btn" onclick="abrirArea('pais')">👨‍👩‍👧 Pais</button>
     <button class="btn" onclick="abrirArea('presenca')">✅ Presença</button>
     <button class="btn" onclick="abrirArea('oferta')">💰 Ofertas</button>
     <button class="btn" onclick="abrirArea('feed')">📰 Feed</button>
     <button class="btn" onclick="abrirArea('arquivos')">📁 Arquivos</button>
   </div>
+  <!-- Login Líder -->
+  <section id="area-login-lider" class="card hidden">
+    <h2>Login do Líder</h2>
+    <input id="lider-email" type="email" placeholder="Email">
+    <input id="lider-senha" type="password" placeholder="Senha">
+    <button class="btn" onclick="login('lider')">Entrar como Líder</button>
+    <p id="lider-erro" class="subtle"></p>
+  </section>
+
+  <!-- Login Auxiliar -->
+  <section id="area-login-auxiliar" class="card hidden">
+    <h2>Entrar como Auxiliar</h2>
+    <input id="aux-nome" placeholder="Seu nome">
+    <button class="btn" onclick="entrarAuxiliar()">Entrar</button>
+    <p id="aux-erro" class="subtle"></p>
+  </section>
 
   <!-- Área dos Pais (Fichas) -->
   <section id="area-pais" class="card hidden">
@@ -80,7 +86,6 @@
     <h3 class="mt-12">Fichas salvas</h3>
     <ul id="fichas-lista"></ul>
   </section>
-
   <!-- Presença -->
   <section id="area-presenca" class="card hidden">
     <h2>Lista de Presença</h2>
@@ -135,7 +140,6 @@
       </div>
     </div>
   </section>
-
   <!-- Feed -->
   <section id="area-feed" class="card hidden">
     <h2>Feed</h2>
@@ -179,18 +183,19 @@
       </div>
     </div>
   </section>
-</main>
-
 <script>
   // Config: substitua se mudar sua URL /exec
   const API_BASE = "https://script.google.com/macros/s/AKfycbzZjAf7796t3Xx30wxOeUjfbiIhqFyLHZ8aa1VwwgvTpS1sFbazYGnHvHk_AMKxhGsYzw/exec";
 
+  // Estado do usuário logado
+  let estado = { usuario: null };
+
   // Navegação
   function mostrarMenu(){ document.getElementById('menuPrincipal').classList.remove('hidden'); }
   function abrirArea(id){
-    const ids=['pais','presenca','oferta','feed','arquivos'];
-    ids.forEach(a=>document.getElementById('area-'+a).classList.add('hidden'));
-    document.getElementById('area-'+id).classList.remove('hidden');
+    const ids=['login-lider','login-auxiliar','pais','presenca','oferta','feed','arquivos'];
+    ids.forEach(a=>document.getElementById('area-'+a)?.classList.add('hidden'));
+    document.getElementById('area-'+id)?.classList.remove('hidden');
     if(id==='presenca'){ if(!document.getElementById('dia-chamada').value) document.getElementById('dia-chamada').value = new Date().toISOString().slice(0,10); carregarPresencas(); }
     if(id==='oferta'){ carregarOfertas(); }
     if(id==='feed'){ carregarFeed(); }
@@ -198,12 +203,37 @@
     if(id==='pais'){ carregarFichas(); }
   }
 
-  // Presença — colunas: NOME, DATA, PRESENTE, TIPO, REGISTRADO POR
+  // Login Líder
+  function login(papel){
+    const email = document.getElementById(`${papel}-email`).value;
+    const senha = document.getElementById(`${papel}-senha`).value;
+    if(!email || !senha){
+      document.getElementById(`${papel}-erro`).textContent = 'Digite email e senha.';
+      return;
+    }
+    estado.usuario = { uid: 'uid-'+papel, nome: 'Líder', papel };
+    alert('Líder logado com sucesso!');
+    abrirArea('presenca');
+  }
+
+  // Login Auxiliar
+  function entrarAuxiliar(){
+    const nome = document.getElementById('aux-nome').value.trim();
+    if(!nome){
+      document.getElementById('aux-erro').textContent = 'Informe seu nome.';
+      return;
+    }
+    estado.usuario = { uid: 'aux-'+Date.now(), nome, papel: 'auxiliar' };
+    alert(`Auxiliar ${nome} entrou.`);
+    abrirArea('presenca');
+  }
+
+  // Presença
   function adicionarPresenca(){
     const nome = document.getElementById('novo-nome').value.trim();
     const tipo = document.getElementById('novo-tipo').value;
     const data = document.getElementById('dia-chamada').value;
-    const registradoPor = "Site";
+    const registradoPor = estado.usuario?.nome || "Site";
     if(!nome || !data){ alert('Informe nome e data.'); return; }
     const dados = [nome, data, "Sim", tipo, registradoPor];
     fetch(`${API_BASE}?sheet=Presenças`, { method: "POST", body: JSON.stringify(dados) })
@@ -230,7 +260,7 @@
       .catch(err=>console.error(err));
   }
 
-  // Fichas — colunas: NOME, NASCIMENTO, RESPONSÁVEL, TELEFONE, OBSERVAÇÃO
+  // Fichas
   function salvarFicha(){
     const nome = document.getElementById('ficha-nome').value.trim();
     const nasc = document.getElementById('ficha-nasc').value;
@@ -258,15 +288,14 @@
       })
       .catch(err=>console.error(err));
   }
-
-  // Ofertas — colunas: DATA, CATEGORIA, TIPO, VALOR, OBSERVAÇÃO, REGISTRADO POR
+  // Ofertas
   function adicionarOferta(){
     const data = new Date().toISOString().slice(0,10);
     const categoria = document.getElementById('of-cat').value;
     const tipo = document.getElementById('of-tipo').value;
     const valor = document.getElementById('of-valor').value;
     const obs   = document.getElementById('of-obs').value.trim();
-    const registradoPor = "Site";
+    const registradoPor = estado.usuario?.nome || "Site";
     if(!valor){ alert('Informe o valor.'); return; }
     const dados = [data, categoria, tipo, valor, obs, registradoPor];
     fetch(`${API_BASE}?sheet=Ofertas`, { method: "POST", body: JSON.stringify(dados) })
@@ -293,13 +322,13 @@
       .catch(err=>console.error(err));
   }
 
-  // Feed — colunas: TEXTO, PÚBLICO, MENCIONADOS, TIPO, CRIADO POR, DATA
+  // Feed
   function postarFeed(){
     const texto = document.getElementById('feed-texto').value.trim();
     const publico = document.getElementById('feed-publico').checked ? "Sim" : "Não";
     const mencoes = document.getElementById('feed-mencoes').value.trim();
     const tipo = document.getElementById('feed-tipo').value;
-    const criadoPor = document.getElementById('feed-criado-por').value.trim() || "Site";
+    const criadoPor = document.getElementById('feed-criado-por').value.trim() || estado.usuario?.nome || "Site";
     const data = new Date().toISOString();
     if(!texto){ alert('Escreva uma mensagem.'); return; }
     const dados = [texto, publico, mencoes, tipo, criadoPor, data];
@@ -323,7 +352,7 @@
       .catch(err=>console.error(err));
   }
 
-  // Arquivos — colunas: TÍTULO, TIPO, URL, CRIADO EM
+  // Arquivos
   function enviarArquivo(){
     const titulo = document.getElementById('arq-titulo').value.trim();
     const tipo   = document.getElementById('arq-tipo').value;
@@ -344,7 +373,6 @@
         tbody.innerHTML = "";
         data.slice(1).forEach(linha=>{
           const tr = document.createElement('tr');
-          // TÍTULO, TIPO, URL, CRIADO EM
           linha.forEach((cel, idx)=>{
             const td = document.createElement('td');
             if(idx===2){
@@ -365,6 +393,7 @@
   // Inicial
   window.addEventListener('load', ()=> mostrarMenu());
 </script>
+</main>
 
 </body>
 </html>
