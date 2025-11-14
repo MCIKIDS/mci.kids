@@ -7,14 +7,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primaria:#4B1E6D; --secundaria:#FF9800; --azul:#4FC3F7; --verde:#8BC34A;
-      --fundo:#FFF8E1; --card:#FCE4EC; --texto:#333; --borda:#ddd;
+      --primaria:#4B1E6D; --secundaria:#FF9800; --card:#FCE4EC; --texto:#333; --borda:#ddd;
     }
     *{box-sizing:border-box}
     body {
       font-family:'Comic Neue',cursive;
       margin:0;
-      color:var(--texto);
       font-size:17px;
       background: linear-gradient(135deg, red, orange, yellow, green, blue, indigo, violet);
       background-size: 1400% 1400%;
@@ -36,6 +34,24 @@
     th{background:#f5f5f5}
     .btn{background:var(--secundaria);color:#fff;border:none;padding:12px 16px;border-radius:8px;cursor:pointer;font-size:16px}
     .btn:hover{background:#F57C00}
+    .versiculo {
+      text-align: center;
+      font-size: 20px;
+      font-weight: normal;
+      color: #fff;
+      margin-top: 20px;
+      padding: 10px;
+    }
+    .center {
+      text-align: center;
+    }
+    .menu-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -45,9 +61,9 @@
 </header>
 <main>
   <p class="versiculo">"Ensina a criança no caminho em que deve andar..." - Provérbios 22:6</p>
-  <div class="center"><button class="btn" onclick="mostrarMenu()">Entrar</button></div>
-
-  <!-- Menu principal -->
+  <div class="center">
+    <button class="btn" onclick="mostrarMenu()">Entrar</button>
+  </div>
   <div id="menuPrincipal" class="menu-grid hidden">
     <button class="btn" onclick="abrirArea('login-lider')">🙋‍♂️ Líder</button>
     <button class="btn" onclick="abrirArea('login-auxiliar')">🧑‍🏫 Auxiliar</button>
@@ -59,53 +75,48 @@
   </div>
   <!-- Login Líder -->
   <section id="area-login-lider" class="card hidden">
-    <h2>Login do Líder</h2>
-    <input id="lider-email" type="email" placeholder="Email">
-    <input id="lider-senha" type="password" placeholder="Senha">
-    <button class="btn" onclick="login('lider')">Entrar como Líder</button>
-    <p id="lider-erro" class="subtle"></p>
+    <h2>Login Líder</h2>
+    <input id="login-lider-email" type="email" placeholder="Email">
+    <input id="login-lider-senha" type="password" placeholder="Senha">
+    <button class="btn" onclick="login('login-lider')">Entrar como Líder</button>
+    <p id="login-lider-erro" style="color:red"></p>
   </section>
 
   <!-- Login Auxiliar -->
   <section id="area-login-auxiliar" class="card hidden">
-    <h2>Entrar como Auxiliar</h2>
-    <input id="aux-nome" placeholder="Seu nome">
+    <h2>Login Auxiliar</h2>
+    <input id="aux-nome" type="text" placeholder="Seu nome">
     <button class="btn" onclick="entrarAuxiliar()">Entrar</button>
-    <p id="aux-erro" class="subtle"></p>
+    <p id="aux-erro" style="color:red"></p>
   </section>
 
-  <!-- Área dos Pais (Fichas) -->
+  <!-- Fichas dos Pais -->
   <section id="area-pais" class="card hidden">
-    <h2>Fichas cadastrais</h2>
+    <h2>Ficha da Criança</h2>
     <input id="ficha-nome" placeholder="Nome da criança">
-    <input id="ficha-nasc" type="date">
-    <input id="ficha-resp" placeholder="Responsável">
+    <input id="ficha-nasc" type="date" placeholder="Data de nascimento">
+    <input id="ficha-resp" placeholder="Nome do responsável">
     <input id="ficha-tel" placeholder="Telefone">
-    <textarea id="ficha-obs" placeholder="Observações / Alergias"></textarea>
-    <button class="btn" onclick="salvarFicha()">Salvar ficha</button>
-    <h3 class="mt-12">Fichas salvas</h3>
+    <textarea id="ficha-obs" placeholder="Observações"></textarea>
+    <button class="btn" onclick="salvarFicha()">Salvar Ficha</button>
+    <h3 class="mt-12">Lista de Fichas</h3>
     <ul id="fichas-lista"></ul>
   </section>
   <!-- Presença -->
   <section id="area-presenca" class="card hidden">
-    <h2>Lista de Presença</h2>
-    <div class="flex mt-8">
-      <label for="dia-chamada"><strong>Dia:</strong></label>
-      <input id="dia-chamada" type="date" />
-    </div>
-    <div id="aluno-controles" class="flex mt-8">
-      <input id="novo-nome" placeholder="Nome">
-      <select id="novo-tipo">
-        <option value="Aluno">Aluno</option>
-        <option value="Convidado">Convidado</option>
-      </select>
-      <button class="btn" onclick="adicionarPresenca()">Adicionar presença</button>
-    </div>
-    <table class="mt-8">
+    <h2>Presença</h2>
+    <label>Data da chamada:</label>
+    <input id="dia-chamada" type="date">
+    <input id="novo-nome" placeholder="Nome da criança">
+    <select id="novo-tipo">
+      <option value="visitante">Visitante</option>
+      <option value="membro">Membro</option>
+    </select>
+    <button class="btn" onclick="adicionarPresenca()">Registrar Presença</button>
+    <h3 class="mt-12">Lista de Presenças</h3>
+    <table>
       <thead>
-        <tr>
-          <th>NOME</th><th>DATA</th><th>PRESENTE</th><th>TIPO</th><th>REGISTRADO POR</th>
-        </tr>
+        <tr><th>Nome</th><th>Data</th><th>Presente</th><th>Tipo</th><th>Registrado por</th></tr>
       </thead>
       <tbody id="lista-presenca"></tbody>
     </table>
@@ -114,31 +125,26 @@
   <!-- Ofertas -->
   <section id="area-oferta" class="card hidden">
     <h2>Ofertas</h2>
-    <div class="flex">
-      <div style="flex:1 1 320px">
-        <h3>Registro</h3>
-        <select id="of-cat">
-          <option value="Oferta">Oferta</option>
-          <option value="Gasto">Gasto</option>
-        </select>
-        <select id="of-tipo">
-          <option value="Entrada">Entrada</option>
-          <option value="Saída">Saída</option>
-        </select>
-        <input id="of-valor" type="number" min="0" step="0.01" placeholder="Valor">
-        <input id="of-obs" placeholder="Observação (opcional)">
-        <button class="btn" onclick="adicionarOferta()">Registrar</button>
-      </div>
-      <div style="flex:1 1 320px">
-        <h3>Histórico</h3>
-        <table>
-          <thead>
-            <tr><th>DATA</th><th>CATEGORIA</th><th>TIPO</th><th>VALOR</th><th>OBSERVAÇÃO</th><th>REGISTRADO POR</th></tr>
-          </thead>
-          <tbody id="historico-oferta"></tbody>
-        </table>
-      </div>
-    </div>
+    <select id="of-cat">
+      <option value="dizimo">Dízimo</option>
+      <option value="oferta">Oferta</option>
+      <option value="especial">Especial</option>
+    </select>
+    <select id="of-tipo">
+      <option value="dinheiro">Dinheiro</option>
+      <option value="pix">Pix</option>
+      <option value="cartao">Cartão</option>
+    </select>
+    <input id="of-valor" type="number" placeholder="Valor">
+    <textarea id="of-obs" placeholder="Observações"></textarea>
+    <button class="btn" onclick="adicionarOferta()">Registrar Oferta</button>
+    <h3 class="mt-12">Histórico de Ofertas</h3>
+    <table>
+      <thead>
+        <tr><th>Data</th><th>Categoria</th><th>Tipo</th><th>Valor</th><th>Obs</th><th>Registrado por</th></tr>
+      </thead>
+      <tbody id="historico-oferta"></tbody>
+    </table>
   </section>
   <!-- Feed -->
   <section id="area-feed" class="card hidden">
@@ -184,47 +190,68 @@
     </div>
   </section>
 <script>
-  // Config: substitua se mudar sua URL /exec
+  // Configuração: URL da sua API Google Apps Script
   const API_BASE = "https://script.google.com/macros/s/AKfycbzZjAf7796t3Xx30wxOeUjfbiIhqFyLHZ8aa1VwwgvTpS1sFbazYGnHvHk_AMKxhGsYzw/exec";
 
   // Estado do usuário logado
   let estado = { usuario: null };
 
-  // Navegação
-  function mostrarMenu(){ document.getElementById('menuPrincipal').classList.remove('hidden'); }
+  // Mostrar menu principal
+  function mostrarMenu(){
+    const menu = document.getElementById('menuPrincipal');
+    if(menu){ menu.classList.remove('hidden'); }
+  }
+
+  // Abrir área específica
   function abrirArea(id){
     const ids=['login-lider','login-auxiliar','pais','presenca','oferta','feed','arquivos'];
     ids.forEach(a=>document.getElementById('area-'+a)?.classList.add('hidden'));
     document.getElementById('area-'+id)?.classList.remove('hidden');
-    if(id==='presenca'){ if(!document.getElementById('dia-chamada').value) document.getElementById('dia-chamada').value = new Date().toISOString().slice(0,10); carregarPresencas(); }
+
+    if(id==='presenca'){ 
+      if(!document.getElementById('dia-chamada').value) 
+        document.getElementById('dia-chamada').value = new Date().toISOString().slice(0,10); 
+      carregarPresencas(); 
+    }
     if(id==='oferta'){ carregarOfertas(); }
     if(id==='feed'){ carregarFeed(); }
     if(id==='arquivos'){ carregarArquivos(); }
     if(id==='pais'){ carregarFichas(); }
   }
 
-  // Login Líder
+  // Login Líder corrigido
   function login(papel){
-    const email = document.getElementById(`${papel}-email`).value;
-    const senha = document.getElementById(`${papel}-senha`).value;
+    const email = document.getElementById(`${papel}-email`).value.trim();
+    const senha = document.getElementById(`${papel}-senha`).value.trim();
+    const erro = document.getElementById(`${papel}-erro`);
+
     if(!email || !senha){
-      document.getElementById(`${papel}-erro`).textContent = 'Digite email e senha.';
+      erro.textContent = 'Digite email e senha.';
       return;
     }
-    estado.usuario = { uid: 'uid-'+papel, nome: 'Líder', papel };
-    alert('Líder logado com sucesso!');
-    abrirArea('presenca');
+
+    // Simulação de login válido
+    if(email === "lider@mci.com" && senha === "1234"){
+      estado.usuario = { uid: 'lider', nome: 'Líder', papel: 'lider' };
+      alert('Login do líder realizado com sucesso!');
+      abrirArea('presenca');
+    } else {
+      erro.textContent = 'Email ou senha inválidos.';
+    }
   }
 
-  // Login Auxiliar
+  // Login Auxiliar corrigido
   function entrarAuxiliar(){
     const nome = document.getElementById('aux-nome').value.trim();
+    const erro = document.getElementById('aux-erro');
+
     if(!nome){
-      document.getElementById('aux-erro').textContent = 'Informe seu nome.';
+      erro.textContent = 'Informe seu nome.';
       return;
     }
+
     estado.usuario = { uid: 'aux-'+Date.now(), nome, papel: 'auxiliar' };
-    alert(`Auxiliar ${nome} entrou.`);
+    alert(`Bem-vindo, ${nome}!`);
     abrirArea('presenca');
   }
 
@@ -239,76 +266,28 @@
     fetch(`${API_BASE}?sheet=Presenças`, { method: "POST", body: JSON.stringify(dados) })
       .then(res=>res.text())
       .then(()=>{ alert('Presença registrada!'); document.getElementById('novo-nome').value=''; carregarPresencas(); })
-      .catch(err=>{ console.error(err); alert('Erro ao registrar.'); });
-  }
-  function carregarPresencas(){
-    fetch(`${API_BASE}?sheet=Presenças`)
-      .then(res=>res.json())
-      .then(data=>{
-        const tbody = document.getElementById('lista-presenca');
-        tbody.innerHTML = "";
-        data.slice(1).forEach(linha=>{
-          const tr = document.createElement('tr');
-          linha.forEach(cel=>{
-            const td = document.createElement('td');
-            td.textContent = cel;
-            tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
-        });
-      })
+      .catch(err=>{ console  // Ofertas
+  function adicionarOferta(){
+    const cat = document.getElementById('of-cat').value;
+    const tipo = document.getElementById('of-tipo').value;
+    const valor = document.getElementById('of-valor').value;
+    const obs = document.getElementById('of-obs').value.trim();
+    const registradoPor = estado.usuario?.nome || "Site";
+    const data = new Date().toISOString();
+    if(!valor){ alert('Informe o valor.'); return; }
+    const dados = [data, cat, tipo, valor, obs, registradoPor];
+    fetch(`${API_BASE}?sheet=Ofertas`, { method:"POST", body: JSON.stringify(dados) })
+      .then(res=>res.text())
+      .then(()=>{ alert('Oferta registrada!'); document.getElementById('of-valor').value=''; document.getElementById('of-obs').value=''; carregarOfertas(); })
       .catch(err=>console.error(err));
   }
 
-  // Fichas
-  function salvarFicha(){
-    const nome = document.getElementById('ficha-nome').value.trim();
-    const nasc = document.getElementById('ficha-nasc').value;
-    const resp = document.getElementById('ficha-resp').value.trim();
-    const tel  = document.getElementById('ficha-tel').value.trim();
-    const obs  = document.getElementById('ficha-obs').value.trim();
-    if(!nome || !nasc || !resp){ alert('Preencha nome, nascimento e responsável.'); return; }
-    const dados = [nome, nasc, resp, tel, obs];
-    fetch(`${API_BASE}?sheet=Fichas`, { method: "POST", body: JSON.stringify(dados) })
-      .then(res=>res.text())
-      .then(()=>{ alert('Ficha salva!'); document.getElementById('ficha-nome').value=''; document.getElementById('ficha-nasc').value=''; document.getElementById('ficha-resp').value=''; document.getElementById('ficha-tel').value=''; document.getElementById('ficha-obs').value=''; carregarFichas(); })
-      .catch(err=>{ console.error(err); alert('Erro ao salvar ficha.'); });
-  }
-  function carregarFichas(){
-    fetch(`${API_BASE}?sheet=Fichas`)
-      .then(res=>res.json())
-      .then(data=>{
-        const lista = document.getElementById('fichas-lista');
-        lista.innerHTML = "";
-        data.slice(1).forEach(linha=>{
-          const li = document.createElement('li');
-          li.textContent = `${linha[0]} — Resp: ${linha[2]} — Tel: ${linha[3]}`;
-          lista.appendChild(li);
-        });
-      })
-      .catch(err=>console.error(err));
-  }
-  // Ofertas
-  function adicionarOferta(){
-    const data = new Date().toISOString().slice(0,10);
-    const categoria = document.getElementById('of-cat').value;
-    const tipo = document.getElementById('of-tipo').value;
-    const valor = document.getElementById('of-valor').value;
-    const obs   = document.getElementById('of-obs').value.trim();
-    const registradoPor = estado.usuario?.nome || "Site";
-    if(!valor){ alert('Informe o valor.'); return; }
-    const dados = [data, categoria, tipo, valor, obs, registradoPor];
-    fetch(`${API_BASE}?sheet=Ofertas`, { method: "POST", body: JSON.stringify(dados) })
-      .then(res=>res.text())
-      .then(()=>{ alert('Oferta registrada!'); document.getElementById('of-valor').value=''; document.getElementById('of-obs').value=''; carregarOfertas(); })
-      .catch(err=>{ console.error(err); alert('Erro ao registrar oferta.'); });
-  }
   function carregarOfertas(){
     fetch(`${API_BASE}?sheet=Ofertas`)
       .then(res=>res.json())
       .then(data=>{
         const tbody = document.getElementById('historico-oferta');
-        tbody.innerHTML = "";
+        tbody.innerHTML="";
         data.slice(1).forEach(linha=>{
           const tr = document.createElement('tr');
           linha.forEach(cel=>{
@@ -325,24 +304,25 @@
   // Feed
   function postarFeed(){
     const texto = document.getElementById('feed-texto').value.trim();
-    const publico = document.getElementById('feed-publico').checked ? "Sim" : "Não";
+    const publico = document.getElementById('feed-publico').checked ? "Sim":"Não";
     const mencoes = document.getElementById('feed-mencoes').value.trim();
     const tipo = document.getElementById('feed-tipo').value;
-    const criadoPor = document.getElementById('feed-criado-por').value.trim() || estado.usuario?.nome || "Site";
+    const criadoPor = document.getElementById('feed-criado-por').value.trim() || estado.usuario?.nome || "Anônimo";
     const data = new Date().toISOString();
-    if(!texto){ alert('Escreva uma mensagem.'); return; }
+    if(!texto){ alert('Digite uma mensagem.'); return; }
     const dados = [texto, publico, mencoes, tipo, criadoPor, data];
-    fetch(`${API_BASE}?sheet=Feed`, { method: "POST", body: JSON.stringify(dados) })
+    fetch(`${API_BASE}?sheet=Feed`, { method:"POST", body: JSON.stringify(dados) })
       .then(res=>res.text())
-      .then(()=>{ alert('Mensagem postada!'); document.getElementById('feed-texto').value=''; document.getElementById('feed-mencoes').value=''; carregarFeed(); })
-      .catch(err=>{ console.error(err); alert('Erro ao postar.'); });
+      .then(()=>{ alert('Mensagem postada!'); document.getElementById('feed-texto').value=''; carregarFeed(); })
+      .catch(err=>console.error(err));
   }
+
   function carregarFeed(){
     fetch(`${API_BASE}?sheet=Feed`)
       .then(res=>res.json())
       .then(data=>{
         const lista = document.getElementById('feed-publico-lista');
-        lista.innerHTML = "";
+        lista.innerHTML="";
         data.slice(1).forEach(linha=>{
           const li = document.createElement('li');
           li.textContent = `[${linha[5]}] (${linha[3]}) ${linha[0]} — Público: ${linha[1]} — Por: ${linha[4]}`;
@@ -355,33 +335,28 @@
   // Arquivos
   function enviarArquivo(){
     const titulo = document.getElementById('arq-titulo').value.trim();
-    const tipo   = document.getElementById('arq-tipo').value;
-    const url    = document.getElementById('arq-url').value.trim();
+    const tipo = document.getElementById('arq-tipo').value;
+    const url = document.getElementById('arq-url').value.trim();
     const criadoEm = new Date().toISOString();
     if(!titulo || !url){ alert('Informe título e URL.'); return; }
     const dados = [titulo, tipo, url, criadoEm];
-    fetch(`${API_BASE}?sheet=Arquivos`, { method: "POST", body: JSON.stringify(dados) })
+    fetch(`${API_BASE}?sheet=Arquivos`, { method:"POST", body: JSON.stringify(dados) })
       .then(res=>res.text())
-      .then(()=>{ alert('Arquivo registrado!'); document.getElementById('arq-titulo').value=''; document.getElementById('arq-url').value=''; carregarArquivos(); })
-      .catch(err=>{ console.error(err); alert('Erro ao registrar arquivo.'); });
+      .then(()=>{ alert('Arquivo salvo!'); document.getElementById('arq-titulo').value=''; document.getElementById('arq-url').value=''; carregarArquivos(); })
+      .catch(err=>console.error(err));
   }
+
   function carregarArquivos(){
     fetch(`${API_BASE}?sheet=Arquivos`)
       .then(res=>res.json())
       .then(data=>{
         const tbody = document.getElementById('arquivos-lista');
-        tbody.innerHTML = "";
+        tbody.innerHTML="";
         data.slice(1).forEach(linha=>{
           const tr = document.createElement('tr');
-          linha.forEach((cel, idx)=>{
+          linha.forEach(cel=>{
             const td = document.createElement('td');
-            if(idx===2){
-              const a = document.createElement('a');
-              a.href = cel; a.target = "_blank"; a.textContent = cel || 'link';
-              td.appendChild(a);
-            } else {
-              td.textContent = cel;
-            }
+            td.textContent = cel;
             tr.appendChild(td);
           });
           tbody.appendChild(tr);
@@ -389,11 +364,7 @@
       })
       .catch(err=>console.error(err));
   }
-
-  // Inicial
-  window.addEventListener('load', ()=> mostrarMenu());
 </script>
 </main>
-
 </body>
 </html>
