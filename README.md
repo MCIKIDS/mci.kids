@@ -1,21 +1,20 @@
-# MCI Kids
+<div align="center">
+<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+</div>
 
-Site simples para apoiar o ministério infantil.
+# Run and deploy your AI Studio app
 
-## 🌐 Link
-[https://mckids.github.io/mckids/](https://mckids.github.io/mckids/)
+This contains everything you need to run your app locally.
 
-## 📌 O que tem
-- Lista de presença
-- Área dos pais
-- Painel do líder e auxiliares
-- Controle de ofertas
-- Feed de avisos e eventos
+View your app in AI Studio: https://ai.studio/apps/drive/1az7QmxUXON9sd90bmR2FA1OWuqfXPj6l
 
-## 🚀 Como usar
-Abra o link acima e utilize as funções disponíveis.
+## Run Locally
 
-## 🔮 Próximos passos
-- Salvar dados em Google Sheets ou Firebase
-- Criar login para líderes e pais
-- Melhorar visual para celular
+**Prerequisites:**  Node.js
+
+
+1. Install dependencies:
+   `npm install`
+2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Run the app:
+   `npm run dev`
